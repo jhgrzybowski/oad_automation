@@ -7,13 +7,13 @@ import requests
 
 
 def create_user(firstName, lastName, mail, username):
-    payload = json.dumps({
+    payload = {
       "firstName": firstName,
       "lastName": lastName,
       "email": mail,
       "enabled": 'true',
       "username": username
-    })
+    }
 
     headers = {
       'Content-Type': 'application/json'
@@ -21,60 +21,60 @@ def create_user(firstName, lastName, mail, username):
 
     res = requests.post("http://localhost:8081/users/create", json=payload, headers=headers)
 
+    print("adding user " + username + ", response: " + res.text)
 
-    print(res)
 
-# TODO: change http.client lib to requests
 def get_token(username):
-    conn = http.client.HTTPSConnection("keycloak", 8080)
+
     payload = 'grant_type=password&client_id=OAD&username=' + username +'&password=pass'
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded'
     }
-    conn.request("POST", "/realms/once_a_day/protocol/openid-connect/token", payload, headers)
-    res = conn.getresponse()
+    res = requests.post("http://keycloak:8080/realms/once_a_day/protocol/openid-connect/token", payload, headers=headers)
 
-    data = res.read()
-    print(data.decode("utf-8"))
+    response_data = res.json()
+    access_token = response_data.get('access_token')
 
-    json_data = json.load(data)
-    acces_token = json_data.get('access_token', None)
-
-    return acces_token
+    print("access token response: " + res.text)
+    return access_token
 
 
-# TODO: change http.client lib to requests
 def upload_photo(access_token, file_path):
 
-    conn = http.client.HTTPSConnection("localhost", 8081)
-    dataList = []
+    data_list = []
     boundary = 'wL36Yn8afVp8Ag7AmP8qZ0SA4n1v9T'
-    dataList.append(encode('--' + boundary))
-    dataList.append(encode('Content-Disposition: form-data; name=picture; filename={0}'.format(file_path)))
+    data_list.append(encode('--' + boundary))
+    data_list.append(encode('Content-Disposition: form-data; name=picture; filename={0}'.format(file_path)))
 
-    fileType = mimetypes.guess_type(file_path)[0] or 'application/octet-stream'
+    file_type = mimetypes.guess_type(file_path)[0] or 'application/octet-stream'
 
-    dataList.append(encode('Content-Type: {}'.format(fileType)))
-    dataList.append(encode(''))
+    data_list.append(encode('Content-Type: {}'.format(file_type)))
+    data_list.append(encode(''))
 
     with open(file_path, 'rb') as f:
-        dataList.append(f.read())
-    dataList.append(encode('--' + boundary + '--'))
-    dataList.append(encode(''))
-    body = b'\r\n'.join(dataList)
+        data_list.append(f.read())
+
+    data_list.append(encode('--' + boundary + '--'))
+    data_list.append(encode(''))
+    body = b'\r\n'.join(data_list)
     payload = body
+
     headers = {
         'Authorization': 'Bearer ' + access_token,
         'Content-type': 'multipart/form-data; boundary={}'.format(boundary)
     }
-    conn.request("POST", "/activities/picture", payload, headers)
-    res = conn.getresponse()
-    data = res.read()
-    print(data.decode("utf-8"))
+
+    res = requests.post("http://localhost:8081/activities/picture", data=payload, headers=headers)
+
+    print("adding pictures: " + res.text)
 
 
 def main():
-    create_user("jan", "daciuk", "daciuk@pg.edu.pl", "jdaciuk")
+
+    create_user("adam", "nowak", "nowak@pg.edu.pl", "anowak")
+    token = get_token("anowak")
+    upload_photo(token, "photo.jpg")
+
 
 if __name__ == '__main__':
     main()
