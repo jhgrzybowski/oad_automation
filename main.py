@@ -1,5 +1,9 @@
-import http.client
-import json
+import csv
+import io
+import os
+import random
+
+from PIL import Image
 import mimetypes
 from codecs import encode
 
@@ -69,11 +73,67 @@ def upload_photo(access_token, file_path):
     print("adding pictures: " + res.text)
 
 
+def compress_photo(input_file_path, output_file_path, target_size, image_format):
+    img = Image.open(input_file_path)
+
+    # if img.mode != 'RGBA':
+    #     img = img.convert('RGBA')
+
+    quality = 95
+
+    while True:
+        img_io = io.BytesIO()
+        img.save(img_io, format=image_format, quality=quality)
+        img_size = img_io.tell()
+
+        if img_size <= target_size or quality <= 10:
+            break
+
+        quality -= 5
+
+    img.save(output_file_path, format=image_format, quality=quality)
+
+
 def main():
 
-    create_user("adam", "nowak", "nowak@pg.edu.pl", "anowak")
-    token = get_token("anowak")
-    upload_photo(token, "photo.jpg")
+    # input_folder = "hobby"
+    # output_folder = "hobby_compressed"
+    # target_size = 1024 * 1024
+    #
+    # for file_name in os.listdir(input_folder):
+    #     input_path = os.path.join(input_folder, file_name)
+    #
+    #     if os.path.isfile(input_path):
+    #         output_path = os.path.join(output_folder, file_name)
+    #
+    #     compress_photo(input_path, output_path, target_size, 'JPEG')
+    #     print("skompresowano plik: " + file_name + "\n")
+
+    csv_file = "uzytkownicy.csv"
+    folder_path = "hobby_compressed"
+
+    with open(csv_file, 'r', newline='') as file:
+        reader = csv.reader(file, delimiter=';')
+
+        next(reader)
+
+        file_list = os.listdir(folder_path)
+
+        for row in reader:
+            if len(row) == 4:
+                name, last_name, email, username = row
+                print("creating user " + username)
+                create_user(name, last_name, email, username)
+                token = get_token(username)
+                random_file = random.choice(file_list)
+                print("file he post is " + random_file)
+                random_file_path = os.path.join(folder_path, random_file)
+                upload_photo(token, random_file_path)
+                file_list.remove(random_file)
+
+    # create_user("adam", "nowak", "nowak@pg.edu.pl", "anowak")
+    # token = get_token("anowak")
+    # upload_photo(token, "photo.jpg")
 
 
 if __name__ == '__main__':
