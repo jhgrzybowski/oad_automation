@@ -97,7 +97,7 @@ def main():
     #
     # input_folder = "hobby_compressed"
     # output_folder = "images"
-    # target_size = 700 * 700 # zmienic w zaleznosci ile sie chce pikseli
+    # target_size = 700 * 700  # zmienic w zaleznosci ile sie chce pikseli
     #
     # for file_name in os.listdir(input_folder):
     #     input_path = os.path.join(input_folder, file_name)
@@ -113,7 +113,7 @@ def main():
 
     ########### SKRYPT DODAJACY UZYTKOWNIKA I WSTAWIAJACY ZDJECIA ######
 
-    csv_file = "uzytkownicy.csv"  # plik z danymi o uzytkownikach
+    csv_file = "uzytkownicy_wybrani.csv"  # plik z danymi o uzytkownikach
     folder_path = "images"  # folder gdzie znajduja sie fotki
 
     with open(csv_file, 'r', newline='') as file:
@@ -123,7 +123,7 @@ def main():
 
         file_list = os.listdir(folder_path)
 
-        users_to_add = 4  # ilu uzytkownikow chcemy dodac
+        users_to_add = 24  # ilu uzytkownikow chcemy dodac
 
         for i in range(users_to_add):
             row = next(reader)
