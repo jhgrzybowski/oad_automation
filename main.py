@@ -76,9 +76,6 @@ def upload_photo(access_token, file_path):
 def compress_photo(input_file_path, output_file_path, target_size, image_format):
     img = Image.open(input_file_path)
 
-    # if img.mode != 'RGBA':
-    #     img = img.convert('RGBA')
-
     quality = 95
 
     while True:
@@ -96,9 +93,11 @@ def compress_photo(input_file_path, output_file_path, target_size, image_format)
 
 def main():
 
-    # input_folder = "hobby"
-    # output_folder = "hobby_compressed"
-    # target_size = 1024 * 1024
+    ############# SKRYPT DO KOMPRESJI ZDJEC #########################
+    #
+    # input_folder = "hobby_compressed"
+    # output_folder = "images"
+    # target_size = 700 * 700 # zmienic w zaleznosci ile sie chce pikseli
     #
     # for file_name in os.listdir(input_folder):
     #     input_path = os.path.join(input_folder, file_name)
@@ -108,32 +107,37 @@ def main():
     #
     #     compress_photo(input_path, output_path, target_size, 'JPEG')
     #     print("skompresowano plik: " + file_name + "\n")
+    #
+    ##################################################################
 
-    csv_file = "uzytkownicy.csv"
-    folder_path = "hobby_compressed"
+
+    ########### SKRYPT DODAJACY UZYTKOWNIKA I WSTAWIAJACY ZDJECIA ######
+
+    csv_file = "uzytkownicy.csv"  # plik z danymi o uzytkownikach
+    folder_path = "images"  # folder gdzie znajduja sie fotki
 
     with open(csv_file, 'r', newline='') as file:
         reader = csv.reader(file, delimiter=';')
 
-        next(reader)
+        next(reader)  # pomijamy naglowek
 
         file_list = os.listdir(folder_path)
 
-        for row in reader:
-            if len(row) == 4:
-                name, last_name, email, username = row
-                print("creating user " + username)
-                create_user(name, last_name, email, username)
-                token = get_token(username)
+        users_to_add = 4  # ilu uzytkownikow chcemy dodac
+
+        for i in range(users_to_add):
+            row = next(reader)
+            name, last_name, email, username = row
+            print("creating user " + username)
+            create_user(name, last_name, email, username)
+            token = get_token(username)
+            for j in range(4):
                 random_file = random.choice(file_list)
                 print("file he post is " + random_file)
-                random_file_path = os.path.join(folder_path, random_file)
+                random_file_path = os.path.join('.\\', folder_path, random_file)
+                print(random_file_path)
                 upload_photo(token, random_file_path)
                 file_list.remove(random_file)
-
-    # create_user("adam", "nowak", "nowak@pg.edu.pl", "anowak")
-    # token = get_token("anowak")
-    # upload_photo(token, "photo.jpg")
 
 
 if __name__ == '__main__':
