@@ -70,7 +70,7 @@ def upload_photo(access_token, file_path):
 
     res = requests.post("http://localhost:8081/activities/picture", data=payload, headers=headers)
 
-    print("adding pictures: " + res.text)
+    print("adding photo response (blank if OK): " + res.text)
 
 
 def compress_photo(input_file_path, output_file_path, target_size, image_format):
