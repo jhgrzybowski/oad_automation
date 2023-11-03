@@ -170,34 +170,5 @@ def main():
                 upload_photo(token, file_to_upload)
 
 
-
-
-    # with open(csv_file, 'r', newline='') as file:
-    #     reader = csv.reader(file, delimiter=';')
-    #
-    #     next(reader)  # pomijamy naglowek
-    #
-    #
-    #     #file_list = os.listdir(folder_path)
-    #
-    #     users_to_add = 24  # ilu uzytkownikow chcemy dodac
-    #     matches_count = users_to_add / 2
-    #     matches[matches_count][2] = []
-    #
-    #     for i in range(users_to_add):
-    #         row = next(reader)
-    #         name, last_name, email, username = row
-    #         print("creating user " + username)
-    #         create_user(name, last_name, email, username)
-    #         token = get_token(username)
-    #         for j in range(4):
-    #             random_file = random.choice(file_list)
-    #             print("file he post is " + random_file)
-    #             random_file_path = os.path.join('.\\', folder_path, random_file)
-    #             print(random_file_path)
-    #             upload_photo(token, random_file_path)
-    #             file_list.remove(random_file)
-
-
 if __name__ == '__main__':
     main()
