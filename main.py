@@ -112,32 +112,91 @@ def main():
 
 
     ########### SKRYPT DODAJACY UZYTKOWNIKA I WSTAWIAJACY ZDJECIA ######
+    #
+    # csv_file = "uzytkownicy.csv"  # plik z danymi o uzytkownikach
+    # folder_path = "images"  # folder gdzie znajduja sie fotki
+    #
+    # with open(csv_file, 'r', newline='') as file:
+    #     reader = csv.reader(file, delimiter=';')
+    #
+    #     next(reader)  # pomijamy naglowek
+    #
+    #     file_list = os.listdir(folder_path)
+    #
+    #     users_to_add = 24  # ilu uzytkownikow chcemy dodac
+    #
+    #     for i in range(users_to_add):
+    #         row = next(reader)
+    #         name, last_name, email, username = row
+    #         print("creating user " + username)
+    #         create_user(name, last_name, email, username)
+    #         token = get_token(username)
+    #         for j in range(4):
+    #             random_file = random.choice(file_list)
+    #             print("file he post is " + random_file)
+    #             random_file_path = os.path.join('.\\', folder_path, random_file)
+    #             print(random_file_path)
+    #             upload_photo(token, random_file_path)
+    #             file_list.remove(random_file)
+
+    ########### SKRYPT DODAJACY KONKRETNYCH USEROW I KONKRETNE FOTKI ZEBY ICH ZMATCHOWAC ######
 
     csv_file = "uzytkownicy_wybrani.csv"  # plik z danymi o uzytkownikach
-    folder_path = "images"  # folder gdzie znajduja sie fotki
+    root_folder = "rekognition_test"  # folder gdzie znajduja sie foldery z potencjalnymi matchami
 
-    with open(csv_file, 'r', newline='') as file:
-        reader = csv.reader(file, delimiter=';')
+    matches_count = 12
 
-        next(reader)  # pomijamy naglowek
+    user_file = open(csv_file, 'r', newline='')
+    reader = csv.reader(user_file, delimiter=';')
 
-        file_list = os.listdir(folder_path)
+    next(reader)  # pomijamy naglowek
 
-        users_to_add = 24  # ilu uzytkownikow chcemy dodac
+    for match_number in range(matches_count):
+        for user_number in range(2):
+            print("It's match" + str(match_number+1) + ", user" + str(user_number+1))
+            curr_path = ".\\" + root_folder + "\\" + "match" + str(match_number+1) + "\\user" + str(user_number+1) + "\\"
+            print(curr_path)
+            row = next(reader)  # bierzemy sobie dane kolejnego usera
+            name, last_name, email, username = row  # dajemy to do zmiennych
 
-        for i in range(users_to_add):
-            row = next(reader)
-            name, last_name, email, username = row
-            print("creating user " + username)
+            print("creating user with username: " + username)
             create_user(name, last_name, email, username)
+
             token = get_token(username)
-            for j in range(4):
-                random_file = random.choice(file_list)
-                print("file he post is " + random_file)
-                random_file_path = os.path.join('.\\', folder_path, random_file)
-                print(random_file_path)
-                upload_photo(token, random_file_path)
-                file_list.remove(random_file)
+
+            file_list = os.listdir(curr_path)
+            for f in file_list:
+                file_to_upload = os.path.join(curr_path, f)
+                upload_photo(token, file_to_upload)
+
+
+
+
+    # with open(csv_file, 'r', newline='') as file:
+    #     reader = csv.reader(file, delimiter=';')
+    #
+    #     next(reader)  # pomijamy naglowek
+    #
+    #
+    #     #file_list = os.listdir(folder_path)
+    #
+    #     users_to_add = 24  # ilu uzytkownikow chcemy dodac
+    #     matches_count = users_to_add / 2
+    #     matches[matches_count][2] = []
+    #
+    #     for i in range(users_to_add):
+    #         row = next(reader)
+    #         name, last_name, email, username = row
+    #         print("creating user " + username)
+    #         create_user(name, last_name, email, username)
+    #         token = get_token(username)
+    #         for j in range(4):
+    #             random_file = random.choice(file_list)
+    #             print("file he post is " + random_file)
+    #             random_file_path = os.path.join('.\\', folder_path, random_file)
+    #             print(random_file_path)
+    #             upload_photo(token, random_file_path)
+    #             file_list.remove(random_file)
 
 
 if __name__ == '__main__':
