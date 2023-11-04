@@ -139,6 +139,7 @@ def main():
     #             upload_photo(token, random_file_path)
     #             file_list.remove(random_file)
 
+
     ########### SKRYPT DODAJACY KONKRETNYCH USEROW I KONKRETNE FOTKI ZEBY ICH ZMATCHOWAC ######
 
     csv_file = "uzytkownicy_wybrani.csv"  # plik z danymi o uzytkownikach
